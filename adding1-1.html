@@ -1,0 +1,251 @@
+<html>
+	<head>
+		<title>module about adding numbers 1-20!</title>
+	</head>
+	
+	<style>
+	body {
+		background-color:lightblue;
+	}
+	div#app-wrapper {
+		width:650px; min-height:610px; background-color:#fff;
+		padding:10px; 
+		margin:auto;
+		position:fixed; left:300px;
+	}
+	div.balls {
+		background-color:green;
+		border:1px solid #000;
+		border-radius:50%;
+		margin: 10px;
+		width:30px; height:30px;
+	}
+	div#balls-container {
+		position:fixed; top:70px; left:550px;
+		width:50px; min-height:300px;
+		border:2px dashed green;
+		
+	}
+	div#balls-container2 {
+		position:fixed; top:70px; left:750px;
+		width:50px; min-height:300px;
+		border:2px dashed green;
+	}
+	div#big-plus {
+		position:fixed; top:190px; left:660px;
+		width:30px; height:30px;
+		font-size:40px; color:green;
+	}
+	div#equals {
+		position:fixed; top:190px; left:820px;
+		width:40px; height:30px;
+		font-size:30px; color:green;
+		
+	}
+	p#plus-sign {
+		margin-left:60px;
+		font-size:20px;
+		color:green;
+	}
+	div#info-text {
+		width:200px;height:300px; position:fixed; z-index:10;
+		font-family:georgia, arial, sans-serif;
+	}
+	div#problem {
+		height:45px; width:200px; 
+		position:fixed; top:10px; left:590px;
+		font-style:italic; font-size:45px; color:green;
+		text-align:center;
+	}
+	div#math-problems {
+		position:fixed; width:100px; margin-top:300px; font-weight:500; font-size:20px;
+		list-style-type:none; font-family:arial, sans-serif; left:30px;
+	}
+	div#math-problems li {
+		margin-bottom:5px;
+	}	
+	div#input-fields {
+		width:100px; position:fixed; top:310px; display:inline-block; left:150px;
+		
+	}
+	div#input-fields input {
+		margin-bottom:9px;
+	}
+	
+	div#check-answer {
+		width:100px; position:fixed; top:270px; z-index:1000;
+	}
+	ul.check-results {
+		height:280px; margin-top:140px; position:fixed;
+		width:170px; font-size:1em; 
+	}
+	ul.check-results li {
+		padding-bottom:10px; 
+	}
+	li.wrong-answer {
+		color:salmon;
+	}
+	li.correct-answer {
+		color:green;
+	}
+	.win-points {
+		position:fixed; right:30px; top:10px;
+		font-size:20px; 
+	}
+
+	</style>
+	<body id="appBody">
+		<div id="info-text">
+			A simple program for displaying circles to help kids when adding between 1-20.  
+			<button id="problems-btn" onClick="genMathProblems()">problems</button>
+		</div>
+		<div id="math-problems"></div>
+		<div id="input-fields">
+			<input type="text" id="answer0" name=""><input type="text" id="answer1" name=""><input type="text" id="answer2" name=""><input type="text" id="answer3" name=""><input type="text" id="answer4" name=""><input type="text" id="answer5" name=""><input type="text" id="answer6" name=""><input type="text" id="answer7" name=""><input type="text" id="answer8" name=""><input type="text" id="answer9" name="">		
+		</div>
+	<div id="check-answer">
+		<button id="check-answer-btn" onClick="compareAnswers()">check answer</button>		
+	</div>
+	<div id=app-wrapper>	
+		<p>:<input type="text" name="balls" id="n1" value="" ></p>
+			<p id="plus-sign">+</p>
+		<p>:<input type="text" name="balls" id="n2" value="" ></p>
+		<button onClick="createBall()" id="createBalls">create</button>
+		<button onClick="clearBalls()" id="clearBalls">clear</button>	
+		<div id="problem"></div> 
+		<div id="balls-container"></div>
+		<div id="balls-container2"></div>
+		<div id="big-plus">+</div>
+		<div id="equals">= ?</div>
+	</div>
+		
+	<script>
+	var ballsContainer = document.getElementById("balls-container");
+	var ballsContainer2 = document.getElementById("balls-container2");
+	var appArea = document.getElementById("app-wrapper");
+	var problemDiv;
+	var tenCorrect = 0;
+	var winPoints = 0;
+	function createBall() {
+		var n1 = document.getElementById("n1").value;
+		var n2 = document.getElementById("n2").value;
+		
+		problemDiv = document.getElementById("problem");
+		problemDiv.innerHTML = n1+" + "+n2+" = ";	
+			
+		for (var i=0; i<n1; i++) {
+			
+			var newBallLeft = document.createElement("div");
+			newBallLeft.className = "balls";
+			ballsContainer.appendChild( newBallLeft );
+		}
+		for (var j=0; j<n2; j++) {
+			var newBallRight = document.createElement("div");
+			newBallRight.className = "balls";
+			ballsContainer2.appendChild( newBallRight );
+		}
+	}
+	function clearBalls() {
+		ballsContainer.innerHTML = "";
+		ballsContainer2.innerHTML = "";
+		problemDiv.innerHTML = "";
+		n1.value="";
+		n2.value="";
+	}
+	var correctAnswers;
+	var studentAnswers;
+	function genMathProblems() {
+		var checkAnswerBtn = document.getElementById('check-answer-btn');
+		checkAnswerBtn.disabled = false;
+		
+		var gen1;
+		var gen2;
+			correctAnswers = [];
+		var mathProblems = document.getElementById("math-problems");
+		clearProblems();
+		clearResults();
+
+		for (i=0; i<10; i++) {
+			gen1 = Math.floor(Math.random()*11);
+			gen2 = Math.floor(Math.random()*11);
+						
+			var newProblem = document.createElement("li");
+			newProblem.textContent= gen1 +" + "+ gen2 + " = ";
+			mathProblems.appendChild(newProblem);
+			
+			correctAnswers.push(gen1 + gen2);
+			console.log(correctAnswers);
+		}
+	}
+	function compareAnswers() {
+		//preparing the student answers array and creating the check results container
+		clearResults();
+		tenCorrect = 0;
+		studentAnswers = [];
+		var checkResults = document.createElement('ul');
+		checkResults.className = "check-results";
+		appArea.appendChild(checkResults); 
+		
+		//getting the students answers for the input field
+		for (i=0; i<10; i++) {
+			var currentInput = document.getElementById("answer"+i).value;
+			studentAnswers.push(Number(currentInput));
+		}
+		//checking the students answers agaisnt the right answers,
+		//and output the result into the results container
+		for (var x=0; x<10; x++) {
+			if(studentAnswers[x] == correctAnswers[x]) {
+				var ifCorrect = "correct :)";
+				console.log(ifCorrect);
+				var result = document.createElement('li');
+				result.textContent = ifCorrect;
+				result.className = "correct-answer";
+				checkResults.appendChild(result);
+				tenCorrect++;
+			} else {
+				var ifWrong = ":( try # "+ (x +1) +" again";
+				console.log (ifWrong);
+				var result = document.createElement('li');
+				result.textContent = ifWrong;
+				result.className = "wrong-answer";
+				checkResults.appendChild(result);
+		}
+		}
+		youWin();
+	}
+	function clearProblems() {
+		var mathProblems = document.getElementById("math-problems");
+		mathProblems.innerHTML = "";
+		var allInputs = document.getElementsByTagName('input');
+		for (i=0; i < allInputs.length; i++) {
+			allInputs[i].value = "";
+		}
+	}
+	function clearResults() {
+		var checkResults = document.getElementsByClassName('check-results');
+		for (i=0; i<checkResults.length; i++) {
+			checkResults[i].innerHTML = "";
+		}		
+	}
+	function youWin() {
+		if (tenCorrect === 10) {
+			var bodyEl = document.getElementById("appBody");
+			bodyEl.style.backgroundColor = "lightgreen";
+			winPoints ++;
+			var existingWinPoints = document.getElementsByClassName("win-points");
+			for(i = 0; i<existingWinPoints.length; i++) {
+				existingWinPoints[i].innerHTML = "";
+			};
+			var winPointsText = document.createElement("p");
+			winPointsText.textContent = "how many times you win: "+winPoints;
+			winPointsText.className = "win-points";
+			document.body.appendChild(winPointsText);
+			tenCorrect = 0;
+			var checkAnswerBtn = document.getElementById('check-answer-btn');
+			checkAnswerBtn.disabled = true;
+		}
+		return winPoints;	
+	}	
+	</script>
+	</body>
+</html>
